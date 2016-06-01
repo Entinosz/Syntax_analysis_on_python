@@ -1,0 +1,17 @@
+int int keyword
+main    id  id
+(   (   limiter
+)   )   limiter
+{   {   limiter
+int int keyword
+a   id  id
+,   ,   limiter
+b   id  id
+,   ,   limiter
+i   id  id
+;   ;   limiter
+cout    id  id
+<<  <<  operator
+b   id  id
+;   ;   limiter
+}   }   limiter

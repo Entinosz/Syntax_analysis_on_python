@@ -1,0 +1,165 @@
+===========FIRST=============
+function
+: set(['int', 'double', 'void', 'char'])
+tmp
+: set(['[', '$'])
+for_exp
+: set(['for'])
+vars
+: set([',', '$'])
+args
+: set(['int', 'double', 'void', 'char', '$'])
+while_exp
+: set(['while'])
+stmt
+: set(['return', 'string', 'for', 'int', '(', 'void', 'number', 'char', 'while', 'double', '{', 'id'])
+args_tail
+: set([',', '$'])
+S
+: set(['int', 'double', 'void', 'char'])
+other
+: set(['$', '<<', 'id', '+', '=', '<'])
+exp
+: set(['id', '(', 'number', 'string'])
+arg
+: set(['int', 'double', 'void', 'char'])
+var
+: set(['id'])
+type
+: set(['int', 'double', 'void', 'char'])
+declare
+: set(['int', 'double', 'void', 'char'])
+block
+: set(['return', 'string', 'for', 'int', '(', 'void', 'number', 'char', 'while', 'double', '{', 'id', '$'])
+tmp2
+: set(['number', '$'])
+
+===========FOLLOW=============
+function
+: set(['int', 'double', 'void', 'char'])
+tmp
+: set([')', ';', ','])
+for_exp
+: set(['return', 'string', 'for', 'int', '(', 'void', 'number', 'char', 'while', 'double', '{', '}', 'id'])
+vars
+: set([';'])
+args
+: set([')'])
+while_exp
+: set(['return', 'string', 'for', 'int', '(', 'void', 'number', 'char', 'while', 'double', '{', '}', 'id'])
+stmt
+: set(['return', 'string', 'int', 'void', 'number', 'char', 'id', 'for', '(', 'while', 'double', '{', '}'])
+args_tail
+: set([')'])
+S
+: set(['~'])
+other
+: set([')', ';'])
+exp
+: set([')', ';'])
+arg
+: set([')', ','])
+var
+: set([')', ';', ','])
+type
+: set(['id'])
+declare
+: set([';'])
+block
+: set(['}'])
+tmp2
+: set([']'])
+
+===========FORSEEN_TABLE=============
+==========function===========
+int : ['type', 'id', '(', 'args', ')', '{', 'block', '}']
+double : ['type', 'id', '(', 'args', ')', '{', 'block', '}']
+void : ['type', 'id', '(', 'args', ')', '{', 'block', '}']
+char : ['type', 'id', '(', 'args', ')', '{', 'block', '}']
+==========tmp===========
+) : ['$']
+; : ['$']
+[ : ['[', 'tmp2', ']']
+, : ['$']
+==========for_exp===========
+for : ['for', '(', 'exp', ';', 'exp', ';', 'exp', ')', 'stmt']
+==========vars===========
+; : ['$']
+, : [',', 'var', 'vars']
+==========args===========
+) : ['$']
+int : ['arg', 'args_tail']
+void : ['arg', 'args_tail']
+char : ['arg', 'args_tail']
+double : ['arg', 'args_tail']
+==========S===========
+int : ['function', 'S']
+double : ['function', 'S']
+void : ['function', 'S']
+char : ['function', 'S']
+~ : ['$']
+==========stmt===========
+return : ['return', 'exp', ';']
+string : ['exp', ';']
+for : ['for_exp']
+int : ['declare', ';']
+double : ['declare', ';']
+void : ['declare', ';']
+number : ['exp', ';']
+char : ['declare', ';']
+while : ['while_exp']
+( : ['exp', ';']
+{ : ['{', 'block', '}']
+id : ['exp', ';']
+==========args_tail===========
+) : ['$']
+, : [',', 'arg', 'args_tail']
+==========while_exp===========
+while : ['while', '(', 'exp', ')', 'stmt']
+==========other===========
+) : ['$']
+<< : ['<<', 'exp']
+id : ['id', '++']
++ : ['+', 'exp']
+; : ['$']
+= : ['=', 'exp']
+< : ['<', 'exp']
+==========exp===========
+id : ['id', 'other']
+( : ['(', 'exp', ')']
+number : ['number']
+string : ['string']
+==========arg===========
+int : ['type', 'var']
+double : ['type', 'var']
+void : ['type', 'var']
+char : ['type', 'var']
+==========var===========
+id : ['id', 'tmp']
+==========type===========
+int : ['int']
+double : ['double']
+void : ['void']
+char : ['char']
+==========declare===========
+int : ['type', 'var', 'vars']
+double : ['type', 'var', 'vars']
+void : ['type', 'var', 'vars']
+char : ['type', 'var', 'vars']
+==========block===========
+return : ['stmt', 'block']
+string : ['stmt', 'block']
+for : ['stmt', 'block']
+int : ['stmt', 'block']
+( : ['stmt', 'block']
+void : ['stmt', 'block']
+number : ['stmt', 'block']
+char : ['stmt', 'block']
+while : ['stmt', 'block']
+double : ['stmt', 'block']
+{ : ['stmt', 'block']
+} : ['$']
+id : ['stmt', 'block']
+==========tmp2===========
+] : ['$']
+number : ['number']
