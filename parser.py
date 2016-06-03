@@ -17,12 +17,13 @@ def readToken(filename):
 
 
 def parser():
-	isll, first, follow, forseen = preSolve()
+	filename = raw_input('please enter filename for Syntax\n')
+	# filename = 'syntax.txt'
+	isll, start,vn_set, vt_set, productions ,forseen = util(filename)
 	if not isll:
-		print 'The Syntax is not LL(1).'
+		# print 'The Syntax is not LL(1).'
 		return
-
-	flag, inStr = readToken('token_table.txt')
+	flag,inStr = readToken('token_table.txt')
 	inStr.append('~')
 	# if not flag:
 	# 	return
@@ -61,12 +62,12 @@ def parser():
 		"""
 		if v in vt_set:
 			if v == inStr[pos]:
-				print v,'匹配'
+				print v,'MATCH'
 				stack_pop(analysis_stack)
 				pos += 1
 				continue
 			else:
-				print '匹配失败'
+				print 'FAILED TO MATCH'
 				break
 		"""
 		如果分析栈中是非终结符，找forseen[v]里面有没有inStr[pos]为键的值，
@@ -75,14 +76,14 @@ def parser():
 		if v in vn_set:
 			si = forseen[v]
 			if inStr[pos] not in si:
-				print '匹配失败'
+				print 'FAILED TO MATCH'
 				break
 			"""
 			可以用产生式推导，非终结符出栈，产生式右边倒序进栈
 			输入字符不变
 			"""
 			right = si[inStr[pos]]
-			print right,'匹配'
+			print right,'MATCH'
 			stack_pop(analysis_stack)
 			if right[0] == '$':
 				continue
@@ -91,7 +92,10 @@ def parser():
 				stack_push(analysis_stack, right[j])
 				j -= 1
 
-	print flag
+	if flag:
+		print 'YES'
+	else:
+		print 'NO'
 
-
-parser()
+if __name__ == '__main__':
+	parser()

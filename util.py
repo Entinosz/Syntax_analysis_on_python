@@ -28,12 +28,14 @@ def readSyntax(filename):
 		productions.append({'left':left, 'right':right})
 	return start, vn_set, vt_set, productions
 
-start, vn_set, vt_set, productions = readSyntax('syntax.txt')
-def preSolve():
+def preSolve(start, vn_set, vt_set, productions):
 	prods_by_vn = {}
 	num_of_prods = {}
 	vn_to_null = {}
 	cur_prods = []
+	first = {}
+	follow = {}
+	forseen = {}
 	#-1: notsure, 0: no, 1: yes
 	# print '=========productions=========='
 	# print len(productions)
@@ -175,43 +177,54 @@ def preSolve():
 	# 	print vn, vn_to_null[vn]
 
 	"""算FIRST集"""
-
-	first = {}
 	def get_first():
 		for vt in vt_set:
 			first[vt] = set([vt])
 		first['$'] = '$'
 
-		def get_first_vn(vn):
+		def get_first_vn(pre, vn):
 			# print vn, prods_by_vn[vn]
 			if vn in first:
-				return
+				return True
 			first[vn] = set()
 			for right in prods_by_vn[vn]:
 				for v in right:
+					if v == pre:
+						print pre,',' ,vn, '->',right
+						print 'left recursion exists'
+						return False
 					if v not in first:
-						get_first_vn(v)
+						if get_first_vn(vn, v) is False:
+							return False
 					first[vn] = first[vn].union(first[v])
 					if not is_v_to_null(v):
 						break
 					if '$' in first[v]:
 						first[vn].remove('$')
+			return True
 
 
 		for vn in vn_set:
-			get_first_vn(vn)
+			tmp = get_first_vn(' ', vn)
+			# print tmp
+			if not tmp:
+				return False
 		for vn in vn_set:
 			if is_v_to_null(vn):
 				first[vn].add('$')
+		return True
 
-	get_first()
+	tmp = get_first()
+	# print tmp
+	if not tmp:
+		return tmp, first, follow, forseen
+
 	# print '===========first============='
 	# for vn in vn_set:
 	# 	print vn, ':', first[vn]
 	
 
 	"""算FOLLOW集"""
-	follow = {}
 	def get_follow():
 		follow[start] = set(['~'])
 		
@@ -281,7 +294,6 @@ def preSolve():
 	预测分析表也以非终结符为关键字，值为以终结符为关键字的字典
 	即分析表的本身和值都是字典
 	"""
-	forseen = {}
 	for vn in vn_set:
 		# print '=============',vn, '=============='
 		forseen[vn] = {}
@@ -309,34 +321,34 @@ def preSolve():
 				if v in vn_dict:
 					print 'not LL(1)'
 					print vn, v, right
-					return False, fisrt, follow, forseen
+					return False, first, follow, forseen
 				else:
 					vn_dict[v] = []
 				vn_dict[v] = right
 		forseen[vn] = vn_dict
 		# print vn, vn_dict
+
 	return True,first, follow, forseen
 
-def main():
-	isll, first, follow, forseen = preSolve()
+def util(filename):
+	start, vn_set, vt_set, productions = readSyntax(filename)
+	isll, first, follow, forseen = preSolve(start, vn_set, vt_set, productions)
 	if isll is False:
 		print 'the parser is not LL(1)'
-		return
-	outfile = open('out_table.txt','w+')
-	outfile.write('===========FIRST=============\n')
-	for vn in vn_set:
-		outfile.write('%s\n: %s\n' %(vn, first[vn]))
+	else:
+		outfile = open('ffs_table.txt','w+')
+		outfile.write('===========FIRST=============\n')
+		for vn in vn_set:
+			outfile.write('%s\n: %s\n' %(vn, first[vn]))
 
-	outfile.write('\n===========FOLLOW=============\n')
-	for vn in vn_set:
-		outfile.write('%s\n: %s\n' %(vn, follow[vn]))
+		outfile.write('\n===========FOLLOW=============\n')
+		for vn in vn_set:
+			outfile.write('%s\n: %s\n' %(vn, follow[vn]))
 
-	outfile.write('\n===========FORSEEN_TABLE=============\n')
-	for vn in forseen:
-		outfile.write('==========%s===========\n' %(vn))
-		key = forseen[vn].keys()
-		for vt in key:
-			outfile.write('%s : %s\n' %(vt, forseen[vn][vt]))
-
-if __name__ == '__main__':
-	main()
+		outfile.write('\n===========FORSEEN_TABLE=============\n')
+		for vn in forseen:
+			outfile.write('==========%s===========\n' %(vn))
+			key = forseen[vn].keys()
+			for vt in key:
+				outfile.write('%s : %s\n' %(vt, forseen[vn][vt]))
+	return isll, start,vn_set, vt_set, productions ,forseen

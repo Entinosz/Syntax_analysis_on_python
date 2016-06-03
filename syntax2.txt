@@ -3,7 +3,7 @@ S
 S = A B
 S = d C
 A = $
-A = b
+A = S
 B = $
 B = a D
 C = A D
