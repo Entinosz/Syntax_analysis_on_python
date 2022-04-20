@@ -1,5 +1,3 @@
-#coding:utf-8
-
 import re
 from util import *
 
@@ -9,7 +7,7 @@ def readToken(filename):
 	for line in open(filename):
 		match = pattern.search(line[:-1])
 		if match is None:
-			print 'Fail to read token file:', filename
+			print ('Fail to read token file:', filename)
 			return False, inToken
 		token = match.group('token')
 		inToken.append(token)
@@ -17,7 +15,7 @@ def readToken(filename):
 
 
 def parser():
-	filename = raw_input('please enter filename for Syntax\n')
+	filename = input('please enter filename for Syntax\n')
 	# filename = 'syntax.txt'
 	isll, start,vn_set, vt_set, productions ,forseen = util(filename)
 	if not isll:
@@ -50,8 +48,8 @@ def parser():
 	step = 0
 	while pos < len(inStr):
 		step += 1
-		print '=========', step, inStr[pos], '=========='
-		print analysis_stack
+		print ('========='), step, inStr[pos], ('==========')
+		print (analysis_stack)
 		v = stack_top(analysis_stack)
 		if inStr[pos] == '~' and  v == '~':
 			flag = True
@@ -62,12 +60,12 @@ def parser():
 		"""
 		if v in vt_set:
 			if v == inStr[pos]:
-				print v,'MATCH'
+				print (v),'MATCH'
 				stack_pop(analysis_stack)
 				pos += 1
 				continue
 			else:
-				print 'FAILED TO MATCH'
+				print ('FAILED TO MATCH')
 				break
 		"""
 		如果分析栈中是非终结符，找forseen[v]里面有没有inStr[pos]为键的值，
@@ -76,14 +74,14 @@ def parser():
 		if v in vn_set:
 			si = forseen[v]
 			if inStr[pos] not in si:
-				print 'FAILED TO MATCH'
+				print ('FAILED TO MATCH')
 				break
 			"""
 			可以用产生式推导，非终结符出栈，产生式右边倒序进栈
 			输入字符不变
 			"""
 			right = si[inStr[pos]]
-			print right,'MATCH'
+			print (right,'MATCH')
 			stack_pop(analysis_stack)
 			if right[0] == '$':
 				continue
@@ -93,9 +91,9 @@ def parser():
 				j -= 1
 
 	if flag:
-		print 'YES'
+		print ('YES')
 	else:
-		print 'NO'
+		print ('NO')
 
 if __name__ == '__main__':
 	parser()
